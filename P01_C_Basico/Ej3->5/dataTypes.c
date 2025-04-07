@@ -22,5 +22,19 @@ int main(){
     printf("int32_t(%lu): %d \n", sizeof(i32),i32);
     printf("uint64_t(%lu): %ld \n", sizeof(u64),u64);
 
+    float f = 0.1;
+    printf("Como float: %f\n", f);
+    double d = (double) f;      //casteo a double
+    printf("Como double: %f\n", d);
+
+    int castF = (int) f;
+    int castD = (int) d;
+
+    printf("Como int casteado de float: %d\n", castF);
+    printf("Como int casteado de double: %d\n", castD);
+
+    // lo que sucede es que castear de float a double no cambia el valor
+    // pero castear de float o double a int, pierde el valor y entrega 0.
+
     return 0;
 }
