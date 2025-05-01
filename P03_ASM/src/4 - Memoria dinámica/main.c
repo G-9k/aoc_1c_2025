@@ -15,6 +15,9 @@ int main() {
 	assert(strCmp(str1, str2) == 1);
 	//assert(strLen(str1) == 0);
 
+	char* cloneStr2 = strClone(str2);
+	printf("%s \n", cloneStr2);
+	free(cloneStr2);
 
 	return 0;
 }

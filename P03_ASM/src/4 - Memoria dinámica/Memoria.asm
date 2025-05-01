@@ -3,6 +3,7 @@ extern free
 extern fprintf
 
 section .data
+	string_fprintf db "%s", 0
 
 section .text
 
@@ -111,14 +112,80 @@ strCmp:
 
 ; char* strClone(char* a)
 strClone:
+	push rbp
+	mov rbp, rsp
+	
+	push r12
+	push r13
+	push r14
+	push r15	; alineada, no volatiles resguardados
+
+	mov r12, rdi ; resguardo el puntero al string
+	
+	call strLen
+	mov r13, rax	; resguardo la longitud para que malloc no la pise
+	mov rdi, rax	; obtengo la longitud del string
+	inc rdi			; le agrego 1 para malloc
+
+	call malloc		; en rax tengo el puntero que debo devolver
+
+	xor r10, r10	; lo uso como contador
+	cmp r13, 0
+	jz .end
+
+	.for:
+		mov r14b, [r12 + r10]	; obtengo el caracter
+		mov byte [rax + r10], r14b	; lo meto en la res
+		inc r10
+		cmp r10, r13	; i < lenA
+		jl .for
+
+
+.end:
+	mov byte [rax + r13], 0
+
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop rbp
 	ret
 
 ; void strDelete(char* a)
 strDelete:
+	push rbp
+	mov rbp, rsp
+
+	call free
+
+	pop rbp
 	ret
 
 ; void strPrint(char* a, FILE* pFile)
 strPrint:
+	push rbp
+	mov rbp, rsp
+
+	; uso el fprintf, el cual espera el pfile como primer argumento.
+
+	push rdi
+	mov rdi, rsi		; cambio de lugar los argumentos
+	pop rsi
+
+	cmp byte [rsi], 0
+	jz .null
+
+	call fprintf
+
+	pop rbp
+	ret
+
+.null:
+
+	mov rsi, 0
+	call fprintf
+	
+	pop rbp
 	ret
 
 ; uint32_t strLen(char* a)
